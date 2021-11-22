@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+# Include 'os-release' to grab Debian pretty name...
+
+. /etc/os-release                                                              
+
+# Styles...
+
+red="$(tput setaf 1)"
+bold="$(tput bold)"
+reset="$(tput sgr0)"
+
+# Get terminal col width...
+
+cols=$(tput cols)
+
+# Main...
+
+clear
+
+echo "
+$red ⢀⣴⠾⠻⢶⣦⠀$reset ${bold}$PRETTY_NAME${reset}
+$red ⣾⠁⢠⠒⠀⣿⡁$reset ${bold}Kernel:${reset} $(uname -rm)
+$red ⢿⡄⠘⠷⠚⠋⠀$reset ${bold}Uptime:${reset} $(uptime -p | cut -d' ' -f2-)
+$red ⠈⠳⣄⠀⠀⠀⠀$reset ${bold}$USER Mem:$(free -gh | grep "Mem" | awk {'print $3'})${reset}
+"
+printf -- "-%.s" $(seq $cols)
+#echo -e "\n"
+
+exit 0
