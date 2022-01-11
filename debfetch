@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 
 # Include 'os-release' to grab Debian pretty name...
-
 . /etc/os-release                                                              
-
 # Styles...
 
 red="$(tput setaf 1)"
