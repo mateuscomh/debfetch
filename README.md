@@ -1,5 +1,6 @@
 # debfetch
 Cabeçalho informações terminal bash no Debian
 
-Criado por @debxp
+by @debxp
+edited @mateuscomh
 
