@@ -25,6 +25,6 @@ $red ⢿⡄⠘⠷⠚⠋⠀$reset ${bold}Uptime:${reset} $(uptime -p | cut -d' ' 
 $red ⠈⠳⣄⠀⠀⠀⠀$reset ${bold}$USER Mem:$(free -gh | grep "Mem" | awk {'print $3'})${reset}
 "
 printf -- "-%.s" $(seq $cols)
-#echo -e "\n"
+echo -e " \n"
 
 exit 0
