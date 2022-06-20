@@ -1,28 +1,81 @@
 #!/usr/bin/env bash
 
-# Include 'os-release' to grab Debian pretty name...
-. /etc/os-release                                                              
-# Styles...
+# Copyright (C) 2021 Blau Araujo <blau@debxp.org>.
+# License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.
+# This is free software: you are free to change and redistribute it.
+# There is NO WARRANTY, to the extent permitted by law.
 
+version='1.0'
+
+help="
+${0##*/} ($version) - Prints short info about Debian.
+Usage: ${0##*/} [OPTIONS]
+OPTIONS:
+    -d   No Debian logo
+    -l   No line
+    -p   No package info
+    -h   This help
+Copyright (C) 2021 Blau Araujo <blau@debxp.org>.
+License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+"
+
+usage() {
+    echo "$help"
+    exit 0
+}
+
+while getopts ":hdlp" opt; do
+    case $opt in
+        h) usage     ;;
+        d) nologo=' ';;
+        l) noline=' ';;
+	p) nopkg=' ' ;;
+        *) usage ;;
+    esac
+done
+
+# Get terminal col width...
+cols=$(tput cols)
+printf -v line "%${cols}s" " "
+line=${line// /-}$'\n'
+
+# Styles...
 red="$(tput setaf 1)"
 bold="$(tput bold)"
 reset="$(tput sgr0)"
 
-# Get terminal col width...
+# Packages...
 
-cols=$(tput cols)
+pkg_total=$(dpkg-query -W -f='${Section}\t${Package}\n' | wc -l)
+pkg_nonfree=$(dpkg-query -W -f='${Section}\t${Package}\n' | grep -c '^non-free')
+pkg_contrib=$(dpkg-query -W -f='${Section}\t${Package}\n' | grep -c '^contrib')
+last_update=$(date -r /var/cache/apt/pkgcache.bin +'%b %d, %Y %R')
+
+[[ $pkg_nonfree -eq 0 && $pkg_contrib -eq 0 ]] && vrms='RMS would be proud!'
+
+packages="
+${nologo:-        } ${bold}Packages:${reset} $pkg_total \
+(non-free:$pkg_nonfree \
+contrib:$pkg_contrib) ${bold}$vrms${reset}
+${nologo:-        } ${bold}Last update:${reset} $last_update
+"
 
 # Main...
 
 clear
 
+. /etc/os-release
+
 echo "
-$red ⢀⣴⠾⠻⢶⣦⠀$reset ${bold}$PRETTY_NAME${reset}
-$red ⣾⠁⢠⠒⠀⣿⡁$reset ${bold}Kernel:${reset} $(uname -rm)
-$red ⢿⡄⠘⠷⠚⠋⠀$reset ${bold}Uptime:${reset} $(uptime -p | cut -d' ' -f2-)
-$red ⠈⠳⣄⠀⠀⠀⠀$reset ${bold}$USER Mem:$(free -gh | grep "Mem" | awk {'print $3'})${reset}
+${nologo:-"$red ⢀⣴⠾⠻⢶⣦⠀"}$reset ${bold}$PRETTY_NAME${reset}
+${nologo:-"$red ⣾⠁⢠⠒⠀⣿⡁"}$reset ${bold}Kernel:${reset} $(uname -rm)
+${nologo:-"$red ⢿⡄⠘⠷⠚⠋⠀"}$reset ${bold}Uptime:${reset} $(uptime -p | cut -d' ' -f2-)
+${nologo:-"$red ⠈⠳⣄⠀⠀⠀⠀"}$reset ${bold}$USER Mem:$(free -gh | grep "Mem" | awk {'print $3'})${reset}
 "
-printf -- "-%.s" $(seq $cols)
-echo -e " \n"
+
+echo ${nopkg:-"$packages"}
+echo ${noline:-"$line"}
 
 exit 0
