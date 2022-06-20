@@ -20,7 +20,6 @@ License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.
 This is free software: you are free to change and redistribute it.
 There is NO WARRANTY, to the extent permitted by law.
 "
-
 usage() {
     echo "$help"
     exit 0
@@ -47,7 +46,6 @@ bold="$(tput bold)"
 reset="$(tput sgr0)"
 
 # Packages...
-
 pkg_total=$(dpkg-query -W -f='${Section}\t${Package}\n' | wc -l)
 pkg_nonfree=$(dpkg-query -W -f='${Section}\t${Package}\n' | grep -c '^non-free')
 pkg_contrib=$(dpkg-query -W -f='${Section}\t${Package}\n' | grep -c '^contrib')
@@ -63,7 +61,6 @@ ${nologo:-        } ${bold}Last update:${reset} $last_update
 "
 
 # Main...
-
 clear
 
 . /etc/os-release
@@ -72,10 +69,7 @@ echo "
 ${nologo:-"$red ⢀⣴⠾⠻⢶⣦⠀"}$reset ${bold}$PRETTY_NAME${reset}
 ${nologo:-"$red ⣾⠁⢠⠒⠀⣿⡁"}$reset ${bold}Kernel:${reset} $(uname -rm)
 ${nologo:-"$red ⢿⡄⠘⠷⠚⠋⠀"}$reset ${bold}Uptime:${reset} $(uptime -p | cut -d' ' -f2-)
-${nologo:-"$red ⠈⠳⣄⠀⠀⠀⠀"}$reset ${bold}$USER Mem:$(free -gh | grep "Mem" | awk {'print $3'})${reset}
-"
-
+${nologo:-"$red ⠈⠳⣄⠀⠀⠀⠀"}$reset ${bold}$USER Mem:$(free -gh | grep "Mem" | awk {'print $3'})${reset}"
+echo -n ${noline:-"$line"}
 echo ${nopkg:-"$packages"}
-echo ${noline:-"$line"}
-
 exit 0
